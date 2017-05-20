@@ -1,0 +1,11 @@
+{
+   "dev": {
+    "host": "localhost",
+    "user": { "ENV" : "DB_USER" },
+    "password" : { "ENV" : "DB_PASS" },
+    "database": "nodedev",
+    "driver": "mysql",
+    "multipleStatements": true
+  },
+  "sql-file" : true
+}
