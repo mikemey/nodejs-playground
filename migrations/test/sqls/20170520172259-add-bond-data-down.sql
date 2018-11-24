@@ -1,2 +1,0 @@
-DROP PROCEDURE IF EXISTS create_bond_data;
-DELETE FROM bond;
