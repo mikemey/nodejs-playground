@@ -1,17 +1,14 @@
 const actors = require('comedy')
 
-const ActorExecutor = ActorObj => {
-  const start = data => {
-    const actorSystem = actors()
-    actorSystem.getLog().setLevel(3)
+const ActorExecutor = (ActorObj, customParameters) => {
+  const actorSystem = actors()
+  actorSystem.getLog().setLevel(3)
 
-    return actorSystem.rootActor()
-      .then(rootActor => rootActor.createChild(ActorObj, { mode: 'forked' }))
-      .then(actor => actor.sendAndReceive('execute', data))
-      .catch(err => console.error(err))
-      .finally(() => actorSystem.destroy())
-  }
-  return { start }
+  return actorSystem.rootActor()
+    .then(rootActor => rootActor.createChild(ActorObj, { mode: 'forked', customParameters }))
+    .then(actor => actor.sendAndReceive('run'))
+    .catch(err => console.error(err))
+    .finally(() => actorSystem.destroy())
 }
 
 module.exports = ActorExecutor
