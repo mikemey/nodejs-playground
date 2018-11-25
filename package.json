@@ -28,9 +28,10 @@
     ]
   },
   "scripts": {
+    "lint": "standard",
     "start": "node ./src/index",
-    "test": "npm run lint -s && NODE_OPTIONS='--max-old-space-size=4096' mocha 'test/**/**.spec.js' -r chai/register-should",
-    "watch": "nodemon -x 'npm run test -s'",
-    "lint": "standard"
+    "be-test": "NODE_OPTIONS='--max-old-space-size=4096' mocha 'test/**/**.spec.js' -r chai/register-should",
+    "be-watch": "nodemon -x 'npm run be-test -s'",
+    "test": "npm run lint -s && npm run be-test -s"
   }
 }
