@@ -1,13 +1,13 @@
-const { calculateCubesTo } = require('../src/cubes')
+const { calculateCubesTo } = require('../src/simplecubes')
 const bigInt = require('big-integer')
 
 const logger = require('../src/timedLogger')
 
 describe('calculate cubes', () => {
   it('calculate small sample size', () => {
-    calculateCubesTo(4).should.deep.equal([
-      bigInt(1), bigInt(8), bigInt(27), bigInt(64)
-    ])
+    const expectation = [1, 8, 27, 64, 125, 216, 343, 512, 729, 1000, 1331, 1728, 2197]
+      .map(_ => bigInt(_))
+    calculateCubesTo(13).should.deep.equal(expectation)
   })
 
   it('calculate medium sample size', () => {
