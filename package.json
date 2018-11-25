@@ -29,7 +29,7 @@
   },
   "scripts": {
     "start": "node ./src/index",
-    "test": "NODE_OPTIONS='--max-old-space-size=10240' mocha 'test/**/**.spec.js' -r chai/register-should",
+    "test": "npm run lint -s && NODE_OPTIONS='--max-old-space-size=4096' mocha 'test/**/**.spec.js' -r chai/register-should",
     "watch": "nodemon -x 'npm run test -s'",
     "lint": "standard"
   }
