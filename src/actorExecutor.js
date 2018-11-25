@@ -7,7 +7,7 @@ const ActorExecutor = (ActorObj, customParameters) => {
   return actorSystem.rootActor()
     .then(rootActor => rootActor.createChild(ActorObj, { mode: 'forked', customParameters }))
     .then(actor => actor.sendAndReceive('run'))
-    .catch(err => console.error(err))
+    .catch(err => { return { err } })
     .finally(() => actorSystem.destroy())
 }
 
