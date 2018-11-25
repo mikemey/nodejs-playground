@@ -1,8 +1,8 @@
 const bigInt = require('big-integer')
 
-const logger = require('./timedLogger')
+const Logger = require('./timedLogger')
 
-const calculateCubesTo = upperLimit => {
+const calculateCubesTo = (upperLimit, logger = Logger()) => {
   logger.log(`allocating Array(${upperLimit})`)
   const result = [...new Array(upperLimit)]
   logger.log('calulating cubes...')
