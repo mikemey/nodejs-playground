@@ -16,12 +16,11 @@ describe('ActorExecutor', () => {
       .then(result => result.should.deep.equal(testData))
   })
 
-  xit('(actorsystem will hang) should return error object when failing initialize', () => {
+  it('should return error object when failing initialize', () => {
     class FailingTestActor {
       initialize () { throw new Error('TESTING-ERROR init') }
     }
-    return ActorExecutor(FailingTestActor)
-      .then(expectErrorResult('Failed to create forked actor FailingTestActor: Error: TESTING-ERROR init'))
+    return ActorExecutor(FailingTestActor).then(expectErrorResult('TESTING-ERROR init'))
   })
 
   it('should return error object when failing run', () => {
