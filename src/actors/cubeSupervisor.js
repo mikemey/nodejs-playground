@@ -1,23 +1,19 @@
 const Logger = require('../timedLogger')
 
-const SliceGenerator = (limit, sliceLength) => {
-  let nextStart = 0
-
-  const hasNext = () => nextStart < limit
-  const next = () => {
-    if (!hasNext()) throw new Error('no more slices')
-    const from = nextStart
-    nextStart = Math.min(nextStart + sliceLength, limit)
-    return { from, to: nextStart }
-  }
-
-  return { hasNext, next, limit }
+const partitionWork = (limit, parts) => {
+  const avgParts = limit / parts
+  return [...new Array(parts)].map((_, ix) => {
+    const from = Math.ceil(ix * avgParts) + 1
+    const to = Math.ceil((ix + 1) * avgParts)
+    return { from, to }
+  })
 }
 
 class CubeSupervisor {
   constructor () {
     this.logger = Logger()
     this.workers = {}
+    this.partitions = []
   }
 
   _log (msg) {
@@ -26,7 +22,8 @@ class CubeSupervisor {
 
   initialize (selfActor) {
     const params = selfActor.customParameters
-    this.slicer = SliceGenerator(params.upperLimit, params.sliceLength)
+    this.upperLimit = params.upperLimit
+    this.partitions = partitionWork(this.upperLimit, params.workerCount)
 
     return selfActor.createChild(params.workerClass, {
       mode: 'forked',
@@ -35,13 +32,14 @@ class CubeSupervisor {
   }
 
   run () {
-    this._log(`allocating Array(${this.slicer.limit})`)
-    const result = [...new Array(this.slicer.limit)]
+    this._log(`allocating Array(${this.upperLimit})`)
+    const result = [...new Array(this.upperLimit)]
     this._log('distributing work...')
 
+    return result
     // const sendAll = () => {
     //   Promise.all(workerConfigObjects.map(createWorker(rootActor)))
-    //     const nextSlice = this.slicer.next()
+    //     const nextSlice = XXXXXX.next()
     //     return this.workers
     //       .sendAndReceive('calculate', nextSlice.from, nextSlice.to)
     //       .then(result => {
@@ -51,8 +49,8 @@ class CubeSupervisor {
     // }
     // return sendAll()
     // const sendPartials = () => {
-    //   if (this.slicer.hasNext()) {
-    //     const nextSlice = this.slicer.next()
+    //   if (XXXXXX.hasNext()) {
+    //     const nextSlice = XXXXXX.next()
     //     return this.workers
     //       .sendAndReceive('calculate', nextSlice.from, nextSlice.to)
     //       .then(result => {
