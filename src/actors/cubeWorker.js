@@ -4,19 +4,31 @@ const Logger = require('../timedLogger')
 class CubeWorker {
   constructor () {
     this.logger = Logger()
-    this._logPrefix = `[WRK-${process.pid}]`
+    this._logPrefix = `[ WRK-${process.pid}]`
   }
 
   _log (msg) {
-    this.logger.log(`${this._logPrefix}] ${msg}`)
+    this.logger.log(`${this._logPrefix} ${msg}`)
   }
 
-  calculate (from, to) {
-    this._log(`received task ${from} to ${to}`)
-    for (var i = from; i < to; i++) {
-      bigInt(i).pow(3)
+  _calculate (from, to) {
+    return [...Array(to - from + 1)].map(_ => {
+      const cube = bigInt(from).pow(3)
+      from++
+      return cube
+    })
+  }
+  calculate (work) {
+    const from = work.from
+    const to = work.to
+    this._log(`recv: ${from} to ${to}`)
+    if (from <= to) {
+      work.result = this._calculate(from, to)
+    } else {
+      work.error = `Invalid from/to: ${from}/${to}`
     }
-    return this._logPrefix
+    this._log(`done: ${work.from} to ${to}`)
+    return work
   }
 }
 
