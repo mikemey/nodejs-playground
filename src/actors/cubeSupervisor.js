@@ -32,36 +32,27 @@ class CubeSupervisor {
   }
 
   run () {
-    this._log(`allocating Array(${this.upperLimit})`)
-    const result = [...new Array(this.upperLimit)]
     this._log('distributing work...')
+    return Promise
+      .all(this.partitions.map(this._sendAndReceivePartition.bind(this)))
+      .then(resultArr => {
+        this._log('combining results...')
+        return [].concat.apply([], resultArr)
+      })
+  }
 
-    return result
-    // const sendAll = () => {
-    //   Promise.all(workerConfigObjects.map(createWorker(rootActor)))
-    //     const nextSlice = XXXXXX.next()
-    //     return this.workers
-    //       .sendAndReceive('calculate', nextSlice.from, nextSlice.to)
-    //       .then(result => {
-    //         this._log(`received result from ${result}`)
-    //       })
-    //   }
-    // }
-    // return sendAll()
-    // const sendPartials = () => {
-    //   if (XXXXXX.hasNext()) {
-    //     const nextSlice = XXXXXX.next()
-    //     return this.workers
-    //       .sendAndReceive('calculate', nextSlice.from, nextSlice.to)
-    //       .then(result => {
-    //         this._log(`received result from ${result}`)
-    //         return sendPartials()
-    //       })
-    //   } else {
-    //     return Promise.resolve(result)
-    //   }
-    // }
-    // return sendPartials()
+  _sendAndReceivePartition (partition) {
+    this._log(`distributing ${JSON.stringify(partition)}`)
+    return this.workers
+      .sendAndReceive('calculate', partition)
+      .then(partial => {
+        this._log(`received: ${partial.from} -> ${partial.to}`)
+        if (partial.error) {
+          this._log(`error: ${partial.error}`)
+          return []
+        }
+        return partial.result
+      })
   }
 }
 

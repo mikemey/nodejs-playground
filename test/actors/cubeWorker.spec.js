@@ -1,5 +1,3 @@
-const bigInt = require('big-integer')
-
 const CubeWorker = require('../../src/actors/cubeWorker')
 
 describe('Cube worker', () => {
@@ -14,7 +12,7 @@ describe('Cube worker', () => {
     workerResult(from, to).should.deep.equal({
       from,
       to,
-      result: [bigInt(27), bigInt(64), bigInt(125), bigInt(216), bigInt(343)]
+      result: ['27', '64', '125', '216', '343']
     })
   })
 
@@ -24,7 +22,7 @@ describe('Cube worker', () => {
     workerResult(from, to).should.deep.equal({
       from,
       to,
-      result: [bigInt(27)]
+      result: ['27']
     })
   })
 

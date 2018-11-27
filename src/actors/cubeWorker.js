@@ -15,19 +15,19 @@ class CubeWorker {
     return [...Array(to - from + 1)].map(_ => {
       const cube = bigInt(from).pow(3)
       from++
-      return cube
+      return cube.toString()
     })
   }
   calculate (work) {
     const from = work.from
     const to = work.to
-    this._log(`recv: ${from} to ${to}`)
+    this._log(`recv: ${from} -> ${to}`)
     if (from <= to) {
       work.result = this._calculate(from, to)
     } else {
       work.error = `Invalid from/to: ${from}/${to}`
     }
-    this._log(`done: ${work.from} to ${to}`)
+    this._log(`done: ${work.from} -> ${to}`)
     return work
   }
 }
